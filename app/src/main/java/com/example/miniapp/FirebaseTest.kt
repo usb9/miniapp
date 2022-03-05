@@ -1,0 +1,105 @@
+package com.example.miniapp
+
+import android.util.Log
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.material.Button
+import androidx.compose.material.OutlinedButton
+import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.Text
+import androidx.compose.runtime.*
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
+
+@Composable
+fun SignupView() {
+    val fireStore = Firebase.firestore
+
+//    var username by remember { mutableStateOf("")}
+    var email by remember { mutableStateOf("")}
+    var password by remember { mutableStateOf("")}
+    val user = User(email, password)
+
+    Row() {
+        OutlinedTextField(value = email, onValueChange = {email = it})
+        OutlinedTextField(value = password, onValueChange = {password = it})
+
+        Button(onClick = {
+            fireStore
+                .collection("users")
+                .add(user)
+
+            email = ""
+            password = ""
+//            alert (success)
+//            then hide sign up, convert to login
+        }) {
+            Text("button")
+        }
+
+    }
+}
+
+@Composable
+fun LoginViewOld() {
+    var text by remember { mutableStateOf("")}
+    val fAuth = Firebase.auth
+    val fireStore = Firebase.firestore
+    fAuth
+//        .createUserWithEmailAndPassword("hieu@hieu.com", "passpass")
+        .signInWithEmailAndPassword("mail1@mail1.com", "passpass1")
+        .addOnSuccessListener {
+//            Log.d("************", "Logged in")
+            fireStore
+                .collection("newsfeed")
+                .document(it.user!!.uid)
+                .set( Feed("t","ttt") )
+        }
+        .addOnFailureListener() {
+            Log.d("************", it.message.toString())
+        }
+    Text(text = fAuth.currentUser!!.email.toString())
+}
+
+@Composable
+fun LoginView() {
+    var email = remember { mutableStateOf("") }
+    var pw = remember { mutableStateOf("") }
+    var info = remember { mutableStateOf("") }
+
+    Column() {
+
+        MyOutlineTextField(text = email, label = "Email", isPw = false)
+        MyOutlineTextField(text = pw, label = "Password", isPw = true)
+
+        OutlinedButton( onClick = {login(email.value, pw.value, info)}) {
+            Text(text = "Login")
+        }
+
+        Text(text = info.value)
+    }
+}
+fun login(email:String, pw:String, info: MutableState<String>){
+    Firebase.auth
+        .signInWithEmailAndPassword(email, pw)
+        .addOnSuccessListener {
+            info.value = "You are logged in with account ${it.user!!.email.toString()}"
+        }
+}
+
+@Composable
+fun MyOutlineTextField(text: MutableState<String>, label: String, isPw: Boolean) {
+    OutlinedTextField(
+        value = text.value,
+        onValueChange = { text.value = it },
+        label = { Text(label) },
+        visualTransformation =
+        if(isPw)
+            PasswordVisualTransformation()
+        else
+            VisualTransformation.None
+    )
+}
