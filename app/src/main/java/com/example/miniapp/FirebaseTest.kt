@@ -76,7 +76,7 @@ fun login(email:String, pw:String, info: MutableState<String>){
 //}
 
 @Composable
-fun SignupView() {
+fun SignupViewOld() {
     val fireStore = Firebase.firestore
 
 //    var username by remember { mutableStateOf("")}

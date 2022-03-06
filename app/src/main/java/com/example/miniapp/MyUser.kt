@@ -1,5 +1,6 @@
 package com.example.miniapp
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -12,6 +13,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
@@ -34,14 +36,54 @@ fun MyUser(userVM: UserViewModel) {
         }
 
         if( !isRegistered ){
-            MyInputField(label = "Username")
-            MyInputField(label = "Password")
-            MyButtonState(nameButton = "Signup")
+//            MyInputField(label = "Username")
+//            MyInputField(label = "Password")
+//            MyButtonState(nameButton = "Signup")
+            SignupView()
         } else {
 //            MyInputField(label = "Username")
 //            MyInputField(label = "Password")
 //            MyButtonState(nameButton = "Login")
             LoginView(userVM)
+        }
+    }
+}
+
+@Composable
+fun SignupView() {
+    var email = remember { mutableStateOf("") }
+    var pw = remember { mutableStateOf("") }
+    var statusSignup by remember { mutableStateOf("") }
+
+    val fAuth = Firebase.auth
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(200.dp),
+        verticalArrangement = Arrangement.SpaceEvenly,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+
+        MyOutlineTextField(text = email, label = "Email", isPw = false)
+        MyOutlineTextField(text = pw, label = "Password", isPw = true)
+
+        OutlinedButton( onClick = {
+            fAuth
+                .createUserWithEmailAndPassword(email.value, pw.value)
+                .addOnSuccessListener {
+                    email.value = ""
+                    pw.value = ""
+                    statusSignup = "success"
+                }
+                .addOnFailureListener() {
+                    Log.d("************", it.message.toString())
+                }
+        }) {
+            Text(text = "SignUp")
+        }
+        if (statusSignup == "success") {
+            Text(text = "SignUp is success, pls login")
         }
     }
 }
