@@ -2,21 +2,21 @@ package com.example.miniapp
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Button
-import androidx.compose.material.Checkbox
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
 @Composable
-fun MyUser() {
+fun MyUser(userVM: UserViewModel) {
     var isRegistered by remember { mutableStateOf(false)}
 
     Column(Modifier.padding(horizontal = 10.dp)) {
@@ -38,11 +38,48 @@ fun MyUser() {
             MyInputField(label = "Password")
             MyButtonState(nameButton = "Signup")
         } else {
-            MyInputField(label = "Username")
-            MyInputField(label = "Password")
-            MyButtonState(nameButton = "Login")
+//            MyInputField(label = "Username")
+//            MyInputField(label = "Password")
+//            MyButtonState(nameButton = "Login")
+            LoginView(userVM)
         }
     }
+}
+
+@Composable
+fun LoginView(userVM: UserViewModel) {
+    var email = remember { mutableStateOf("") }
+    var pw = remember { mutableStateOf("") }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(200.dp),
+        verticalArrangement = Arrangement.SpaceEvenly,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+
+        MyOutlineTextField(text = email, label = "Email", isPw = false)
+        MyOutlineTextField(text = pw, label = "Password", isPw = true)
+
+        OutlinedButton( onClick = { userVM.loginUser(email.value, pw.value)}) {
+            Text(text = "Login")
+        }
+    }
+}
+
+@Composable
+fun MyOutlineTextField(text: MutableState<String>, label: String, isPw: Boolean) {
+    OutlinedTextField(
+        value = text.value,
+        onValueChange = { text.value = it },
+        label = { Text(label) },
+        visualTransformation =
+        if(isPw)
+            PasswordVisualTransformation()
+        else
+            VisualTransformation.None
+    )
 }
 
 @Composable

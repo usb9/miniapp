@@ -1,11 +1,23 @@
 package com.example.miniapp
 
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
 class UserViewModel: ViewModel() {
-    init {}
+    var username = mutableStateOf("")
 
-    val fAuth = Firebase.auth
+    fun loginUser(email: String, pw: String) {
+        Firebase.auth
+            .signInWithEmailAndPassword(email, pw)
+            .addOnSuccessListener {
+                username.value = email
+            }
+    }
+
+    fun logoutUser() {
+        Firebase.auth.signOut()
+        username.value = ""
+    }
 }

@@ -12,9 +12,68 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+
+//@Composable
+//fun MainView() {
+//    val userVM = viewModel<UserViewModel>()
+//
+//    if(userVM.username.value.isEmpty()){
+//        LoginView(userVM)
+//    }else {
+//        Text(text = userVM.username.value)
+//    }
+//}
+
+//@Composable
+//fun LoginView(userVM: UserViewModel) {
+//    var email = remember { mutableStateOf("") }
+//    var pw = remember { mutableStateOf("") }
+//
+//    Column(
+//        modifier = Modifier
+//            .fillMaxWidth()
+//            .height(200.dp),
+//        verticalArrangement = Arrangement.SpaceEvenly,
+//        horizontalAlignment = Alignment.CenterHorizontally
+//    ) {
+//
+//        MyOutlineTextField(text = email, label = "Email", isPw = false)
+//        MyOutlineTextField(text = pw, label = "Password", isPw = true)
+//
+//        OutlinedButton( onClick = { userVM.loginUser(email.value, pw.value)}) {
+//            Text(text = "Login")
+//        }
+//    }
+//}
+fun login(email:String, pw:String, info: MutableState<String>){
+    Firebase.auth
+        .signInWithEmailAndPassword(email, pw)
+        .addOnSuccessListener {
+            info.value = "You are logged in with account ${it.user!!.email.toString()}"
+            Log.d("************", "Logged in")
+        }
+        .addOnFailureListener() {
+            Log.d("************", it.message.toString())
+        }
+}
+
+//@Composable
+//fun MyOutlineTextField(text: MutableState<String>, label: String, isPw: Boolean) {
+//    OutlinedTextField(
+//        value = text.value,
+//        onValueChange = { text.value = it },
+//        label = { Text(label) },
+//        visualTransformation =
+//        if(isPw)
+//            PasswordVisualTransformation()
+//        else
+//            VisualTransformation.None
+//    )
+//}
 
 @Composable
 fun SignupView() {
@@ -66,54 +125,4 @@ fun LoginViewOld() {
             Log.d("************", it.message.toString())
         }
     Text(text = fAuth.currentUser!!.email.toString())
-}
-
-@Composable
-fun LoginView() {
-    var email = remember { mutableStateOf("") }
-    var pw = remember { mutableStateOf("") }
-    var info = remember { mutableStateOf("") }
-
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(200.dp),
-        verticalArrangement = Arrangement.SpaceEvenly,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-
-        MyOutlineTextField(text = email, label = "Email", isPw = false)
-        MyOutlineTextField(text = pw, label = "Password", isPw = true)
-
-        OutlinedButton( onClick = {login(email.value, pw.value, info)}) {
-            Text(text = "Login")
-        }
-
-        Text(text = info.value)
-    }
-}
-fun login(email:String, pw:String, info: MutableState<String>){
-    Firebase.auth
-        .signInWithEmailAndPassword(email, pw)
-        .addOnSuccessListener {
-            info.value = "You are logged in with account ${it.user!!.email.toString()}"
-            Log.d("************", "Logged in")
-        }
-        .addOnFailureListener() {
-            Log.d("************", it.message.toString())
-        }
-}
-
-@Composable
-fun MyOutlineTextField(text: MutableState<String>, label: String, isPw: Boolean) {
-    OutlinedTextField(
-        value = text.value,
-        onValueChange = { text.value = it },
-        label = { Text(label) },
-        visualTransformation =
-        if(isPw)
-            PasswordVisualTransformation()
-        else
-            VisualTransformation.None
-    )
 }
