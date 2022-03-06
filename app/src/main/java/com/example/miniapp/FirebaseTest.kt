@@ -1,15 +1,17 @@
 package com.example.miniapp
 
 import android.util.Log
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.unit.dp
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -49,14 +51,16 @@ fun LoginViewOld() {
     val fAuth = Firebase.auth
     val fireStore = Firebase.firestore
     fAuth
-//        .createUserWithEmailAndPassword("hieu@hieu.com", "passpass")
-        .signInWithEmailAndPassword("mail1@mail1.com", "passpass1")
+//        .createUserWithEmailAndPassword("a@a.com", "passpass")
+        .signInWithEmailAndPassword("a@a.com", "passpass")
         .addOnSuccessListener {
 //            Log.d("************", "Logged in")
             fireStore
                 .collection("newsfeed")
-                .document(it.user!!.uid)
-                .set( Feed("t","ttt") )
+//                .document(it.user!!.uid)
+//                .set( Feed("t","ttt") )
+                .add( Feed("u","uuu") )
+
         }
         .addOnFailureListener() {
             Log.d("************", it.message.toString())
@@ -70,7 +74,13 @@ fun LoginView() {
     var pw = remember { mutableStateOf("") }
     var info = remember { mutableStateOf("") }
 
-    Column() {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(200.dp),
+        verticalArrangement = Arrangement.SpaceEvenly,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
 
         MyOutlineTextField(text = email, label = "Email", isPw = false)
         MyOutlineTextField(text = pw, label = "Password", isPw = true)
@@ -87,6 +97,10 @@ fun login(email:String, pw:String, info: MutableState<String>){
         .signInWithEmailAndPassword(email, pw)
         .addOnSuccessListener {
             info.value = "You are logged in with account ${it.user!!.email.toString()}"
+            Log.d("************", "Logged in")
+        }
+        .addOnFailureListener() {
+            Log.d("************", it.message.toString())
         }
 }
 
