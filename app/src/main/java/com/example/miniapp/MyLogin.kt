@@ -53,7 +53,7 @@ fun MyUser(userVM: UserViewModel) {
 fun SignupView() {
     var email = remember { mutableStateOf("") }
     var pw = remember { mutableStateOf("") }
-    var statusSignup by remember { mutableStateOf("") }
+    var statusSignup by remember { mutableStateOf(false) }
 
     val fAuth = Firebase.auth
 
@@ -74,7 +74,7 @@ fun SignupView() {
                 .addOnSuccessListener {
                     email.value = ""
                     pw.value = ""
-                    statusSignup = "success"
+                    statusSignup = true
                 }
                 .addOnFailureListener() {
                     Log.d("************", it.message.toString())
@@ -82,7 +82,7 @@ fun SignupView() {
         }) {
             Text(text = "SignUp")
         }
-        if (statusSignup == "success") {
+        if (statusSignup) {
             Text(text = "SignUp is success, pls login")
         }
     }

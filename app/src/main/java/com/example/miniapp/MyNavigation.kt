@@ -27,12 +27,12 @@ fun MyNavigation() {
         MyUser(userVM)
     }else {
 //        Text(text = userVM.username.value)
-        MainScaffoldView()
+        MainScaffoldView(userVM.username.value)
     }
 }
 
 @Composable
-fun MainScaffoldView() {
+fun MainScaffoldView(username: String) {
     val navControl = rememberNavController()
 
     Scaffold(
@@ -40,10 +40,25 @@ fun MainScaffoldView() {
         bottomBar = { BottomNavBarView(navControl) },
 //        content = {}
     ) {
-        NavHost(navController = navControl, startDestination = "newsfeed") {
+        NavHost(navController = navControl, startDestination = "user") {
+            composable("user") { MyAccount(username) }
             composable("category") { Text("category") }
             composable("newsfeed") { NewsFeed() }
         }
+    }
+}
+
+@Composable
+fun MyAccount(username: String) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(200.dp),
+        verticalArrangement = Arrangement.SpaceEvenly,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text("Hello: $username")
+        Text("Your phone number is: $username")
     }
 }
 
@@ -73,12 +88,12 @@ fun BottomNavBarView(navC: NavHostController) {
             .background(colorResource(R.color.my_main_color)),
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
-//        Icon(
-//            painter = painterResource(R.drawable.ic_user),
-//            contentDescription = "user",
-//            Modifier.clickable { navC.navigate("user") },
-//            tint = Color.White
-//        )
+        Icon(
+            painter = painterResource(R.drawable.ic_user),
+            contentDescription = "user",
+            Modifier.clickable { navC.navigate("user") },
+            tint = Color.White
+        )
         Icon(
             painter = painterResource(R.drawable.ic_category),
             contentDescription = "category",
