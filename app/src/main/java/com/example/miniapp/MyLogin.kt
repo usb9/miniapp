@@ -30,8 +30,8 @@ fun MyUser(userVM: UserViewModel) {
         Row(Modifier.padding(top = 10.dp, bottom = 10.dp)) {
             Text(
                 text = if(isRegistered) "Log in" else "Register",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold
+                fontSize = 36.sp,
+                fontWeight = FontWeight.Bold,
             )
         }
 

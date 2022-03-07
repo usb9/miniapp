@@ -27,12 +27,12 @@ fun MyNavigation() {
         MyUser(userVM)
     }else {
 //        Text(text = userVM.username.value)
-        MainScaffoldView(userVM.username.value)
+        MainScaffoldView(userVM.username.value, userVM.pws.value)
     }
 }
 
 @Composable
-fun MainScaffoldView(username: String) {
+fun MainScaffoldView(username: String, pws: String) {
     val navControl = rememberNavController()
 
     Scaffold(
@@ -41,24 +41,32 @@ fun MainScaffoldView(username: String) {
 //        content = {}
     ) {
         NavHost(navController = navControl, startDestination = "user") {
-            composable("user") { MyAccount(username) }
-            composable("category") { Text("category") }
-            composable("newsfeed") { NewsFeed() }
+            composable("user") { MyAccount(username, pws) }
+            composable("category") { MyProduct() }
+            composable("newsfeed") { MyNewsFeed() }
         }
     }
 }
 
 @Composable
-fun MyAccount(username: String) {
+fun MyAccount(username: String, pws: String) {
+    val showPsw = remember {mutableStateOf(false)}
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .height(200.dp),
+            .padding(start = 10.dp)
+            .height(300.dp),
         verticalArrangement = Arrangement.SpaceEvenly,
-        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text("Hello: $username")
-        Text("Your phone number is: $username")
+
+        Button( onClick = { showPsw.value = true } ) {
+            Text("Click here to see your password")
+        }
+        if (showPsw.value) {
+            Text(text = pws)
+        }
     }
 }
 
@@ -68,7 +76,7 @@ fun TopBarView() {
 
     Row(modifier = Modifier
         .fillMaxWidth()
-        .background(Color(0xFFF7CA43))
+        .background(Color(0xFFFAB8FF))
         .padding(10.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
