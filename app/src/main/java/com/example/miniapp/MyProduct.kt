@@ -35,7 +35,7 @@ fun MyProduct() {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 20.dp)
-                .height(200.dp),
+                .height(120.dp),
             verticalArrangement = Arrangement.SpaceEvenly,
         ) {
             Button(onClick = { computerVM.getRandomComputerData() }) {
