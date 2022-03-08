@@ -103,7 +103,7 @@ fun BottomNavBarView(navC: NavHostController) {
             tint = Color.White
         )
         Icon(
-            painter = painterResource(R.drawable.ic_category),
+            painter = painterResource(R.drawable.ic_computer),
             contentDescription = "category",
             Modifier.clickable { navC.navigate("category") },
             tint = Color.White
